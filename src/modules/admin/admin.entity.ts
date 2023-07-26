@@ -5,22 +5,22 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
-@Entity('admins', { name: 'admin' })
+@Entity("admins", { name: "admin" })
 export class AdminEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: 'id' })
-  id: number;
+  @PrimaryGeneratedColumn("uuid", { name: "id" })
+  id: string;
 
-  @Column({ name: 'name', type: 'varchar', unique: true })
+  @Column({ name: "name", type: "varchar", unique: true })
   name: string;
 
-  @Column({ name: 'password', type: 'varchar' })
+  @Column({ name: "password", type: "varchar" })
   password: string;
 
-  @CreateDateColumn({ name: 'create_at' })
+  @CreateDateColumn({ name: "create_at" })
   createAt: Date;
 
-  @UpdateDateColumn({ name: 'update_at' })
+  @UpdateDateColumn({ name: "update_at" })
   updateAt: Date;
 }

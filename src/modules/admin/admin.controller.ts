@@ -3,37 +3,64 @@ import {
   UseInterceptors,
   Body,
   Post,
+  UseGuards,
   ValidationPipe,
   BadRequestException,
-} from '@nestjs/common';
+} from "@nestjs/common";
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from "@nestjs/swagger";
 
-// import { ResponseMessage } from '@decorators/response-message.decorator';
+import { ResponseMessage } from "@decorators/response-message.decorator";
 
-import { ResponseInterceptor } from '@/interceptors/response.interceptor';
-// import { ParamsInterceptor } from '@/interceptors/params.interceptor';
+import { ResponseInterceptor } from "@/interceptors/response.interceptor";
 
-import { AdminService } from './admin.service';
+import { JwtAuthGuard } from "@/guards/jwt.guard";
 
-import { AuthAdminDto } from './dto/auth-admin.dto';
+import { AdminService } from "./admin.service";
 
-@Controller('admin')
+import { RegisterAdminDto } from "./dto/register-admin.dto";
+import { LoginAdminDto } from "./dto/login-admin.dto";
+
+import {
+  REGISTER_SUCCESS,
+  LOGIN_SUCCESS,
+  UNAUTHORIZED,
+  NAME_ALREADT_EXISTS,
+  LOGIN_INCORRECT,
+  INVALID_INPUT,
+} from "./admin.constants";
+
+@Controller("admin")
 @UseInterceptors(ResponseInterceptor)
+@ApiTags("Admin")
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Post('register')
-  async register(@Body(ValidationPipe) body: AuthAdminDto) {
+  @Post("register")
+  @UseGuards(JwtAuthGuard)
+  @ResponseMessage(REGISTER_SUCCESS)
+  @ApiCreatedResponse({ description: REGISTER_SUCCESS })
+  @ApiBadRequestResponse({ description: INVALID_INPUT })
+  @ApiUnauthorizedResponse({ description: UNAUTHORIZED })
+  async register(@Body(ValidationPipe) body: RegisterAdminDto) {
     const oldAdmin = await this.adminService.findAdmin(body.name);
-    if (!oldAdmin) throw new BadRequestException();
+    if (oldAdmin) throw new BadRequestException(NAME_ALREADT_EXISTS);
 
-    return this.adminService.createAdmin(body);
+    return await this.adminService.createAdmin(body);
   }
 
-  @Post('login')
-  async login(@Body(ValidationPipe) body: AuthAdminDto) {
-    const oldAdmin = await this.adminService.findAdmin(body.name);
-    if (!oldAdmin) throw new BadRequestException();
-
-    return this.adminService.createAdmin(body);
+  @Post("login")
+  @ResponseMessage(LOGIN_SUCCESS)
+  @ApiOkResponse({ description: LOGIN_SUCCESS })
+  @ApiBadRequestResponse({ description: INVALID_INPUT })
+  @ApiUnauthorizedResponse({ description: LOGIN_INCORRECT })
+  async login(@Body(ValidationPipe) body: LoginAdminDto) {
+    const { id } = await this.adminService.validateAdmin(body);
+    return this.adminService.login(id);
   }
 }

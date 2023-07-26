@@ -1,13 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { JwtService } from "@nestjs/jwt";
 
-import { Repository } from 'typeorm';
-import { compare, genSalt, hash } from 'bcryptjs';
+import { Repository } from "typeorm";
+import { compare, genSalt, hash } from "bcryptjs";
 
-import { AdminEntity } from './admin.entity';
+import { AdminEntity } from "./admin.entity";
 
-import { AuthAdminDto } from './dto/auth-admin.dto';
+import { RegisterAdminDto } from "./dto/register-admin.dto";
+import { LoginAdminDto } from "./dto/login-admin.dto";
+
+import { LOGIN_INCORRECT } from "./admin.constants";
 
 @Injectable()
 export class AdminService {
@@ -21,32 +24,28 @@ export class AdminService {
     return this.adminRepository.findOne({ where: { name } });
   }
 
-  async createAdmin(body: AuthAdminDto) {
+  async createAdmin(body: RegisterAdminDto) {
     const salt = await genSalt(10);
 
-    const newUser = this.adminRepository.create({
+    const newAdmin = this.adminRepository.create({
       name: body.name.toLowerCase(),
       password: await hash(body.password, salt),
     });
 
-    return newUser.save();
+    return newAdmin.save();
   }
 
-  async validateAdmin(body: AuthAdminDto) {
+  async validateAdmin(body: LoginAdminDto) {
     const admin = await this.findAdmin(body.name);
-    if (!admin) {
-      throw new UnauthorizedException();
-    }
+    if (!admin) throw new UnauthorizedException(LOGIN_INCORRECT);
 
     const isCorrectPassword = await compare(body.password, admin.password);
-    if (!isCorrectPassword) {
-      throw new UnauthorizedException();
-    }
+    if (!isCorrectPassword) throw new UnauthorizedException(LOGIN_INCORRECT);
 
     return { id: admin.id };
   }
 
-  async login(id: number) {
+  async login(id: string) {
     const payload = { id };
 
     return {
