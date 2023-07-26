@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class UniqueSerivce {
-  params: Record<string, any>;
+  params: Record<string, unknown>;
 
-  getParams(): Record<string, any> {
+  getParams(): Record<string, unknown> {
     return this.params;
   }
 
-  setParams(params: Record<string, any>): void {
+  setParams(params: Record<string, unknown>): void {
     this.params = params;
   }
 }

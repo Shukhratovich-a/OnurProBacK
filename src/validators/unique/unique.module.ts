@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { UniqueConstraint } from './unique.constraint';
-import { UniqueSerivce } from './unique.service';
+import { UniqueConstraint } from "./unique.constraint";
+import { UniqueSerivce } from "./unique.service";
 
 @Module({
   providers: [UniqueSerivce, UniqueConstraint],

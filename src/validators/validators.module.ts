@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { UniqueModule } from './unique/unique.module';
+import { UniqueModule } from "./unique/unique.module";
 
 @Module({
   imports: [UniqueModule],

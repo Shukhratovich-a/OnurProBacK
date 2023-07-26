@@ -1,15 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectEntityManager } from '@nestjs/typeorm';
+import { Inject, Injectable } from "@nestjs/common";
+import { InjectEntityManager } from "@nestjs/typeorm";
 
-import { EntityManager } from 'typeorm';
-import { each, at } from 'lodash';
+import { EntityManager } from "typeorm";
+import { each, at } from "lodash";
 import {
   ValidationArguments,
   ValidatorConstraintInterface,
   ValidatorConstraint,
-} from 'class-validator';
+} from "class-validator";
 
-import { UniqueSerivce } from './unique.service';
+import { UniqueSerivce } from "./unique.service";
 
 interface Arguments extends ValidationArguments {
   object: {
@@ -17,7 +17,7 @@ interface Arguments extends ValidationArguments {
   };
 }
 
-@ValidatorConstraint({ name: 'unique', async: true })
+@ValidatorConstraint({ name: "unique", async: true })
 @Injectable()
 export class UniqueConstraint implements ValidatorConstraintInterface {
   constructor(
@@ -27,10 +27,7 @@ export class UniqueConstraint implements ValidatorConstraintInterface {
     private uniqueService: UniqueSerivce,
   ) {}
 
-  async validate(
-    value: string,
-    validationArguments?: Arguments,
-  ): Promise<boolean> {
+  async validate(value: string, validationArguments?: Arguments): Promise<boolean> {
     const [entityClass, queryConditions] = validationArguments.constraints;
 
     if (value) value = value.toLowerCase();
@@ -40,9 +37,7 @@ export class UniqueConstraint implements ValidatorConstraintInterface {
       params: this.uniqueService.getParams(),
     };
 
-    const qb = this.entityManager
-      .getRepository(entityClass)
-      .createQueryBuilder('entity');
+    const qb = this.entityManager.getRepository(entityClass).createQueryBuilder("entity");
     qb.select(queryConditions.select).where(queryConditions.where);
 
     const parametersQuery = {};
