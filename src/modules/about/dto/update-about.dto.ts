@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { IsEnum, IsOptional, IsString, Length } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
 
 import { StatusEnum } from "@/enums/status.enum";
 
@@ -12,10 +12,10 @@ export class UpdateAboutDto {
     example: "This company was created ...",
     description: "Enter description for about",
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @Length(124, 4096)
-  description: string;
+  description?: string;
 
   @ApiProperty({
     name: "status",
@@ -26,5 +26,5 @@ export class UpdateAboutDto {
   })
   @IsEnum(StatusEnum)
   @IsOptional()
-  status: StatusEnum;
+  status?: StatusEnum;
 }

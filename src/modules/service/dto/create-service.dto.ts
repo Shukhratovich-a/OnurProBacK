@@ -30,7 +30,7 @@ export class CreateServiceDto {
   })
   @IsString()
   @IsOptional()
-  image: string;
+  image?: string;
 
   @ApiProperty({
     name: "alias",
@@ -60,7 +60,7 @@ export class CreateServiceDto {
   })
   @IsEnum(StatusEnum)
   @IsOptional()
-  status: StatusEnum;
+  status?: StatusEnum;
 }
 
 export class CreateServiceBodyDto {
@@ -101,7 +101,7 @@ export class CreateServiceBodyDto {
   description: string;
 
   @ApiProperty({
-    name: "status",
+    name: "lang",
     enum: LangEnum,
     required: true,
     example: "en",

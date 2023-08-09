@@ -12,10 +12,7 @@ type UniqueConstraintInterface<E> = [
   },
 ];
 
-export const Unique = <E>(
-  property: UniqueConstraintInterface<E>,
-  validationOptions?: ValidationOptions,
-) => {
+export const Unique = <E>(property: UniqueConstraintInterface<E>, validationOptions?: ValidationOptions) => {
   return (object: Record<string, any>, propertyName: string): void => {
     registerDecorator({
       target: object.constructor,

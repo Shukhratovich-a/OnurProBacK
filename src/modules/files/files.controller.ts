@@ -1,5 +1,8 @@
-import { Controller, UseInterceptors, Post, UploadedFile } from "@nestjs/common";
+import { Controller, UseInterceptors, Post, UploadedFile, UseGuards } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+
+import { JwtAuthGuard } from "@/guards/jwt.guard";
 
 import { FilesService } from "./files.service";
 
@@ -8,11 +11,14 @@ import { FileElementResponese } from "./dto/file-element.dto";
 import { MFile } from "./mfile.class";
 
 @Controller("files")
+@ApiTags("Files")
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post("upload")
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor("file"))
+  @ApiBearerAuth()
   async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<FileElementResponese[]> {
     const saveArray: MFile[] = [new MFile(file)];
 

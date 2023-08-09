@@ -17,21 +17,20 @@ export class AboutSerivce {
     private readonly aboutRepository: Repository<AboutEntity>,
   ) {}
 
-  async findAbout(lang: LangEnum) {
+  async findByLang(lang: LangEnum) {
     return this.aboutRepository.findOne({ where: { lang } });
   }
 
-  async createAbout(lang: LangEnum, body: CreateAboutDto) {
-    const newAbout = this.aboutRepository.create({
-      description: body.description,
-      lang,
-    });
-
-    return newAbout.save();
+  async findById(id: string) {
+    return this.aboutRepository.findOne({ where: { id } });
   }
 
-  async updateAbout(lang: LangEnum, body: UpdateAboutDto) {
-    const oldAbout = await this.findAbout(lang);
+  async create(lang: LangEnum, body: CreateAboutDto) {
+    return this.aboutRepository.save({ description: body.description, lang });
+  }
+
+  async update(lang: LangEnum, body: UpdateAboutDto) {
+    const oldAbout = await this.findByLang(lang);
 
     return this.aboutRepository.save({ id: oldAbout.id, ...body });
   }

@@ -11,14 +11,16 @@ import {
   NotFoundException,
   ForbiddenException,
   ParseEnumPipe,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import {
-  ApiBadRequestResponse,
-  ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiOkResponse,
-  ApiParam,
   ApiTags,
+  ApiBearerAuth,
+  ApiParam,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiForbiddenResponse,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
@@ -51,7 +53,7 @@ import {
 export class AboutController {
   constructor(private readonly aboutService: AboutSerivce) {}
 
-  @Get(":lang")
+  @Get("/by-lang/:lang")
   @ResponseMessage(FETCHED_SUCCESSFULLY)
   @ApiParam({
     name: "lang",
@@ -61,13 +63,30 @@ export class AboutController {
     required: true,
   })
   @ApiOkResponse({ description: FETCHED_SUCCESSFULLY })
-  async getAbout(@Param("lang", new ParseEnumPipe(LangEnum)) lang: LangEnum) {
-    return this.aboutService.findAbout(lang);
+  async getByLang(@Param("lang", new ParseEnumPipe(LangEnum)) lang: LangEnum) {
+    return this.aboutService.findByLang(lang);
   }
 
-  @Post(":lang")
+  @Get("/by-id/:id")
+  @UseGuards(JwtAuthGuard)
+  @ResponseMessage(FETCHED_SUCCESSFULLY)
+  @ApiBearerAuth()
+  @ApiParam({
+    name: "id",
+    type: "string",
+    example: "415dddea-9c61-4b0b-850e-7ed1f3663df6",
+    description: "Enter id",
+    required: true,
+  })
+  @ApiOkResponse({ description: FETCHED_SUCCESSFULLY })
+  async getById(@Param("id", ParseUUIDPipe) id: string) {
+    return this.aboutService.findById(id);
+  }
+
+  @Post("/create/:lang")
   @UseGuards(JwtAuthGuard)
   @ResponseMessage(CREATED_SUCCESSFULLY)
+  @ApiBearerAuth()
   @ApiParam({
     name: "lang",
     enum: LangEnum,
@@ -79,19 +98,17 @@ export class AboutController {
   @ApiBadRequestResponse({ description: INVALID_INPUT })
   @ApiUnauthorizedResponse({ description: UNAUTHORIZED })
   @ApiForbiddenResponse({ description: ABOUT_ALREADY_EXISTS })
-  async createAbout(
-    @Param("lang", new ParseEnumPipe(LangEnum)) lang: LangEnum,
-    @Body(ValidationPipe) body: CreateAboutDto,
-  ) {
-    const oldAbout = await this.aboutService.findAbout(lang);
+  async create(@Param("lang", new ParseEnumPipe(LangEnum)) lang: LangEnum, @Body(ValidationPipe) body: CreateAboutDto) {
+    const oldAbout = await this.aboutService.findByLang(lang);
     if (oldAbout) throw new ForbiddenException(ABOUT_ALREADY_EXISTS);
 
-    return await this.aboutService.createAbout(lang, body);
+    return await this.aboutService.create(lang, body);
   }
 
-  @Patch(":lang")
+  @Patch("/update/:lang")
   @UseGuards(JwtAuthGuard)
   @ResponseMessage(UPDATED_SUCCESSFULLY)
+  @ApiBearerAuth()
   @ApiOkResponse({ description: UPDATED_SUCCESSFULLY })
   @ApiBadRequestResponse({ description: INVALID_INPUT })
   @ApiUnauthorizedResponse({ description: UNAUTHORIZED })
@@ -102,13 +119,10 @@ export class AboutController {
     description: "Enter lang",
     required: true,
   })
-  async updateAbout(
-    @Param("lang", new ParseEnumPipe(LangEnum)) lang: LangEnum,
-    @Body(ValidationPipe) body: UpdateAboutDto,
-  ) {
-    const oldAbout = await this.aboutService.findAbout(lang);
+  async update(@Param("lang", new ParseEnumPipe(LangEnum)) lang: LangEnum, @Body(ValidationPipe) body: UpdateAboutDto) {
+    const oldAbout = await this.aboutService.findByLang(lang);
     if (!oldAbout) throw new NotFoundException(NOT_FOUND);
 
-    return await this.aboutService.updateAbout(lang, body);
+    return await this.aboutService.update(lang, body);
   }
 }

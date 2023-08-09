@@ -1,19 +1,21 @@
 import {
   Entity,
+  Index,
   BaseEntity,
   PrimaryGeneratedColumn,
   Column,
+  ManyToOne,
+  OneToMany,
   JoinColumn,
   Relation,
   CreateDateColumn,
   UpdateDateColumn,
-  Index,
-  ManyToOne,
-  OneToMany,
 } from "typeorm";
 
 import { StatusEnum } from "@/enums/status.enum";
 import { LangEnum } from "@/enums/lang.enum";
+
+import { PartnerEntity } from "../partner/partner.entity";
 
 @Entity("services", { name: "service" })
 export class SerivceEntity extends BaseEntity {
@@ -24,18 +26,19 @@ export class SerivceEntity extends BaseEntity {
   poster: string;
 
   @Column({ name: "image", type: "varchar", nullable: true })
-  image: string;
+  image?: string;
 
   @Column({ name: "alias", type: "varchar", unique: true })
   alias: string;
 
   @Column({ name: "status", type: "enum", enum: StatusEnum, default: StatusEnum.ACTIVE })
-  status: StatusEnum;
+  status?: StatusEnum;
 
-  @OneToMany(() => SerivceBodyEntity, (serviceBody) => serviceBody.service, {
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => SerivceBodyEntity, (serviceBody) => serviceBody.service, { onDelete: "CASCADE" })
   serviceBody: Relation<SerivceBodyEntity[]>;
+
+  @OneToMany(() => PartnerEntity, (partner) => partner.service, { onDelete: "CASCADE" })
+  partners: Relation<PartnerEntity[]>;
 
   @CreateDateColumn({ name: "create_at" })
   createAt: Date;
@@ -62,10 +65,7 @@ export class SerivceBodyEntity extends BaseEntity {
   @Column({ name: "lang", type: "enum", enum: LangEnum, default: LangEnum.EN })
   lang: LangEnum;
 
-  @ManyToOne(() => SerivceEntity, (service) => service.serviceBody, {
-    onDelete: "CASCADE",
-    nullable: false,
-  })
+  @ManyToOne(() => SerivceEntity, (service) => service.serviceBody, { onDelete: "CASCADE", nullable: false })
   @JoinColumn({ name: "service_id" })
   service: SerivceEntity;
 

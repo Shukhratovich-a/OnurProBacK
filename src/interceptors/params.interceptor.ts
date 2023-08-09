@@ -2,7 +2,7 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from "@nes
 import { Observable } from "rxjs";
 import { Handler } from "express";
 
-import { UniqueSerivce } from "@validators/unique/unique.service";
+import { UniqueSerivce } from "@/validators/unique/unique.service";
 
 @Injectable()
 export class ParamsInterceptor implements NestInterceptor {

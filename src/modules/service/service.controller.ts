@@ -1,6 +1,7 @@
 import {
   Controller,
   UseInterceptors,
+  UseGuards,
   Get,
   Post,
   Patch,
@@ -15,6 +16,7 @@ import {
 } from "@nestjs/common";
 import {
   ApiTags,
+  ApiBearerAuth,
   ApiParam,
   ApiQuery,
   ApiOkResponse,
@@ -28,6 +30,8 @@ import { ResponseInterceptor } from "@/interceptors/response.interceptor";
 import { ParamsInterceptor } from "@/interceptors/params.interceptor";
 
 import { ResponseMessage } from "@/decorators/response-message.decorator";
+
+import { JwtAuthGuard } from "@/guards/jwt.guard";
 
 import { LangEnum } from "@/enums/lang.enum";
 
@@ -70,7 +74,8 @@ export class ServiceController {
     return await this.serviceService.findAll(lang);
   }
 
-  @Get(":alias")
+  @Get("/by-alias/:alias")
+  @ResponseMessage(GET_ONE_SUCCESS)
   @ApiQuery({
     name: "lang",
     enum: LangEnum,
@@ -85,34 +90,55 @@ export class ServiceController {
     description: "Enter alias",
     required: true,
   })
-  @ResponseMessage(GET_ONE_SUCCESS)
   @ApiOkResponse({ description: GET_ONE_SUCCESS })
   @ApiBadRequestResponse({ description: INVALID_INPUT })
-  async getByAlias(
-    @Param("alias") alias: string,
-    @Query("lang", new ParseEnumPipe(LangEnum)) lang: LangEnum,
-  ) {
+  async getByAlias(@Param("alias") alias: string, @Query("lang", new ParseEnumPipe(LangEnum)) lang: LangEnum) {
     return await this.serviceService.findByAlias(lang, alias);
   }
 
-  @Post()
+  @Get("/by-id/:id")
+  @UseGuards(JwtAuthGuard)
+  @ResponseMessage(GET_ONE_SUCCESS)
+  @ApiBearerAuth()
+  @ApiParam({
+    name: "id",
+    type: "string",
+    example: "415dddea-9c61-4b0b-850e-7ed1f3663df6",
+    description: "Enter id",
+    required: true,
+  })
+  @ApiOkResponse({ description: GET_ONE_SUCCESS })
+  @ApiBadRequestResponse({ description: INVALID_INPUT })
+  async getById(@Param("id", ParseUUIDPipe) id: string) {
+    return await this.serviceService.findById(id);
+  }
+
+  @Post("/create")
+  @UseGuards(JwtAuthGuard)
   @ResponseMessage(SERVICE_CREATE_SUCCESS)
+  @ApiBearerAuth()
   @ApiCreatedResponse({ description: SERVICE_CREATE_SUCCESS })
   @ApiBadRequestResponse({ description: INVALID_INPUT })
   async createService(@Body(ValidationPipe) body: CreateServiceDto) {
     return await this.serviceService.createService(body);
   }
 
-  @Post("/body/:id")
+  @Post("/create-body/:id")
+  @UseGuards(JwtAuthGuard)
   @ResponseMessage(BODY_CREATE_SUCCESS)
+  @ApiBearerAuth()
+  @ApiParam({
+    name: "id",
+    type: "string",
+    example: "415dddea-9c61-4b0b-850e-7ed1f3663df6",
+    description: "Enter id",
+    required: true,
+  })
   @ApiCreatedResponse({ description: BODY_CREATE_SUCCESS })
   @ApiBadRequestResponse({ description: INVALID_INPUT })
   @ApiForbiddenResponse({ description: LANG_EXISTS })
   @ApiNotFoundResponse({ description: SERVICE_NOT_FOUND })
-  async createBody(
-    @Param("id", ParseUUIDPipe) id: string,
-    @Body(ValidationPipe) body: CreateServiceBodyDto,
-  ) {
+  async createBody(@Param("id", ParseUUIDPipe) id: string, @Body(ValidationPipe) body: CreateServiceBodyDto) {
     const service = await this.serviceService.findById(id);
     if (!service) throw new NotFoundException(SERVICE_NOT_FOUND);
 
@@ -122,33 +148,31 @@ export class ServiceController {
     return await this.serviceService.createServiceBody(id, body);
   }
 
-  @Patch(":id")
-  @ResponseMessage(SERVICE_UPDATE_SUCCESS)
+  @Patch("/update/:id")
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(ParamsInterceptor)
+  @ResponseMessage(SERVICE_UPDATE_SUCCESS)
+  @ApiBearerAuth()
   @ApiOkResponse({ description: SERVICE_UPDATE_SUCCESS })
   @ApiBadRequestResponse({ description: INVALID_INPUT })
   @ApiNotFoundResponse({ description: SERVICE_NOT_FOUND })
-  async updateService(
-    @Param("id", ParseUUIDPipe) id: string,
-    @Body(ValidationPipe) body: UpdateServiceDto,
-  ) {
+  async updateService(@Param("id", ParseUUIDPipe) id: string, @Body(ValidationPipe) body: UpdateServiceDto) {
     const service = await this.serviceService.findById(id);
     if (!service) throw new NotFoundException(SERVICE_NOT_FOUND);
 
     return this.serviceService.updateService(id, body);
   }
 
-  @Patch("/body/:id")
+  @Patch("/update-body/:id")
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(ParamsInterceptor)
   @ResponseMessage(BODY_UPDATE_SUCCESS)
+  @ApiBearerAuth()
   @ApiOkResponse({ description: BODY_UPDATE_SUCCESS })
   @ApiBadRequestResponse({ description: INVALID_INPUT })
   @ApiForbiddenResponse({ description: LANG_EXISTS })
   @ApiNotFoundResponse({ description: BODY_NOT_FOUND })
-  async updateServiceBody(
-    @Param("id", ParseUUIDPipe) id: string,
-    @Body(ValidationPipe) body: UpdateServiceBodyDto,
-  ) {
+  async updateServiceBody(@Param("id", ParseUUIDPipe) id: string, @Body(ValidationPipe) body: UpdateServiceBodyDto) {
     const serviceBody = await this.serviceService.findBodyById(id);
     if (!serviceBody) throw new NotFoundException(BODY_NOT_FOUND);
 

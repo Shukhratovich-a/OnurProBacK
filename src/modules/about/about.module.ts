@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { AboutEntity } from './about.entity';
+import { AboutEntity } from "./about.entity";
 
-import { AboutController } from './about.controller';
+import { AboutController } from "./about.controller";
 
-import { AboutSerivce } from './about.service';
+import { AboutSerivce } from "./about.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([AboutEntity])],

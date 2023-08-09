@@ -1,21 +1,23 @@
 import {
   Controller,
   UseInterceptors,
-  Body,
-  Post,
   UseGuards,
+  Body,
+  HttpCode,
+  Post,
   ValidationPipe,
   BadRequestException,
 } from "@nestjs/common";
 import {
-  ApiBadRequestResponse,
-  ApiCreatedResponse,
-  ApiOkResponse,
   ApiTags,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
-import { ResponseMessage } from "@decorators/response-message.decorator";
+import { ResponseMessage } from "@/decorators/response-message.decorator";
 
 import { ResponseInterceptor } from "@/interceptors/response.interceptor";
 
@@ -44,17 +46,19 @@ export class AdminController {
   @Post("register")
   @UseGuards(JwtAuthGuard)
   @ResponseMessage(REGISTER_SUCCESS)
+  @ApiBearerAuth()
   @ApiCreatedResponse({ description: REGISTER_SUCCESS })
   @ApiBadRequestResponse({ description: INVALID_INPUT })
   @ApiUnauthorizedResponse({ description: UNAUTHORIZED })
   async register(@Body(ValidationPipe) body: RegisterAdminDto) {
-    const oldAdmin = await this.adminService.findAdmin(body.name);
+    const oldAdmin = await this.adminService.findByName(body.name);
     if (oldAdmin) throw new BadRequestException(NAME_ALREADT_EXISTS);
 
     return await this.adminService.createAdmin(body);
   }
 
   @Post("login")
+  @HttpCode(200)
   @ResponseMessage(LOGIN_SUCCESS)
   @ApiOkResponse({ description: LOGIN_SUCCESS })
   @ApiBadRequestResponse({ description: INVALID_INPUT })

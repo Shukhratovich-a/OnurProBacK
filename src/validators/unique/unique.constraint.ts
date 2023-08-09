@@ -3,11 +3,7 @@ import { InjectEntityManager } from "@nestjs/typeorm";
 
 import { EntityManager } from "typeorm";
 import { each, at } from "lodash";
-import {
-  ValidationArguments,
-  ValidatorConstraintInterface,
-  ValidatorConstraint,
-} from "class-validator";
+import { ValidationArguments, ValidatorConstraintInterface, ValidatorConstraint } from "class-validator";
 
 import { UniqueSerivce } from "./unique.service";
 

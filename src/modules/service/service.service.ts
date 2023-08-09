@@ -4,6 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Not, Repository } from "typeorm";
 
 import { LangEnum } from "@/enums/lang.enum";
+import { StatusEnum } from "@/enums/status.enum";
 
 import { SerivceEntity, SerivceBodyEntity } from "./service.entity";
 
@@ -22,51 +23,37 @@ export class ServiceService {
   async findAll(lang: LangEnum = LangEnum.EN) {
     return this.serviceRepository.find({
       select: { serviceBody: { name: true, slug: true } },
-      where: { serviceBody: { lang } },
+      where: { serviceBody: { lang }, status: StatusEnum.ACTIVE },
       relations: { serviceBody: true },
     });
   }
 
   async findByAlias(lang: LangEnum = LangEnum.EN, alias: string) {
-    return this.serviceRepository.findOne({
-      where: { serviceBody: { lang }, alias },
-      relations: { serviceBody: true },
-    });
+    return this.serviceRepository
+      .createQueryBuilder("service")
+      .leftJoinAndSelect("service.serviceBody", "body", "body.lang = :lang", { lang })
+      .leftJoinAndSelect("service.partners", "partner", "partner.status = :status", { status: StatusEnum.ACTIVE })
+      .where("service.alias = :alias", { alias })
+      .andWhere("service.status = :status", { status: StatusEnum.ACTIVE })
+      .getOne();
   }
 
   async findById(id: string) {
-    return this.serviceRepository.findOne({
-      where: { id },
-    });
+    return this.serviceRepository.findOne({ where: { id }, relations: { serviceBody: true } });
   }
 
   async findByServiceIdAndLang(id: string, lang: LangEnum) {
-    return this.serviceBodyRepository.findOne({
-      where: {
-        lang,
-        service: { id },
-      },
-    });
+    return this.serviceBodyRepository.findOne({ where: { lang, service: { id } } });
   }
 
   async findByBodyIdAndLang(id: string, lang: LangEnum) {
-    const service = await this.serviceRepository.findOne({
-      where: { serviceBody: { id } },
-    });
+    const service = await this.serviceRepository.findOne({ where: { serviceBody: { id } } });
 
-    return this.serviceBodyRepository.findOne({
-      where: {
-        id: Not(id),
-        lang,
-        service: { id: service.id },
-      },
-    });
+    return this.serviceBodyRepository.findOne({ where: { id: Not(id), lang, service: { id: service.id } } });
   }
 
   async findBodyById(id: string) {
-    return this.serviceBodyRepository.findOne({
-      where: { id },
-    });
+    return this.serviceBodyRepository.findOne({ where: { id } });
   }
 
   async createService(body: CreateServiceDto) {

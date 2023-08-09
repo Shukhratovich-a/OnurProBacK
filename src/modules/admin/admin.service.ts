@@ -20,8 +20,12 @@ export class AdminService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async findAdmin(name: string) {
+  async findByName(name: string) {
     return this.adminRepository.findOne({ where: { name } });
+  }
+
+  async findById(id: string) {
+    return this.adminRepository.findOne({ where: { id } });
   }
 
   async createAdmin(body: RegisterAdminDto) {
@@ -36,7 +40,7 @@ export class AdminService {
   }
 
   async validateAdmin(body: LoginAdminDto) {
-    const admin = await this.findAdmin(body.name);
+    const admin = await this.findByName(body.name);
     if (!admin) throw new UnauthorizedException(LOGIN_INCORRECT);
 
     const isCorrectPassword = await compare(body.password, admin.password);

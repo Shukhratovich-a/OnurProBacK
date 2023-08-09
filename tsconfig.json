@@ -19,12 +19,7 @@
     "noFallthroughCasesInSwitch": false,
 
     "paths": {
-      "@/*": ["src/*"],
-      "@configs/*": ["src/configs/*"],
-      "@modules/*": ["src/modules/*"],
-      "@validators/*": ["src/validators/*"],
-      "@interceptors/*": ["src/interceptors/*"],
-      "@decorators/*": ["src/decorators/*"]
+      "@/*": ["src/*"]
     }
   }
 }

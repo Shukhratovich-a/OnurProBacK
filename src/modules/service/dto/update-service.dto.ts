@@ -13,13 +13,13 @@ export class UpdateServiceDto {
   @ApiProperty({
     name: "poster",
     type: "string",
-    required: true,
+    required: false,
     example: "example.webp",
     description: "Enter poster path",
   })
   @IsString()
   @IsOptional()
-  poster: string;
+  poster?: string;
 
   @ApiProperty({
     name: "image",
@@ -30,12 +30,12 @@ export class UpdateServiceDto {
   })
   @IsString()
   @IsOptional()
-  image: string;
+  image?: string;
 
   @ApiProperty({
     name: "alias",
     type: "string",
-    required: true,
+    required: false,
     example: "it-service",
     description: "Enter alias for service",
   })
@@ -49,7 +49,7 @@ export class UpdateServiceDto {
       parameters: { alias: "value", id: "params.id" },
     },
   ])
-  alias: string;
+  alias?: string;
 
   @ApiProperty({
     name: "status",
@@ -60,54 +60,54 @@ export class UpdateServiceDto {
   })
   @IsEnum(StatusEnum)
   @IsOptional()
-  status: StatusEnum;
+  status?: StatusEnum;
 }
 
 export class UpdateServiceBodyDto {
   @ApiProperty({
     name: "name",
     type: "string",
-    required: true,
+    required: false,
     example: "Department of It",
     description: "Enter name for service",
   })
   @IsString()
   @IsOptional()
   @Length(2, 256)
-  name: string;
+  name?: string;
 
   @ApiProperty({
     name: "slug",
     type: "string",
-    required: true,
+    required: false,
     example: "It",
     description: "Enter slug for service",
   })
   @IsString()
   @IsOptional()
   @Length(2, 256)
-  slug: string;
+  slug?: string;
 
   @ApiProperty({
     name: "description",
     type: "string",
-    required: true,
+    required: false,
     example: "It",
     description: "Enter description for service",
   })
   @IsString()
   @IsOptional()
   @Length(128, 4096)
-  description: string;
+  description?: string;
 
   @ApiProperty({
-    name: "status",
+    name: "lang",
     enum: LangEnum,
-    required: true,
+    required: false,
     example: "en",
     description: "Enter lang",
   })
   @IsEnum(LangEnum)
   @IsOptional()
-  lang: LangEnum;
+  lang?: LangEnum;
 }
