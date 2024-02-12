@@ -4,7 +4,7 @@ import { IsEnum, IsOptional, IsString, Length } from "class-validator";
 
 import { Unique } from "@/validators/unique/unique.decorator";
 
-import { SerivceEntity } from "../service.entity";
+import { ServiceEntity } from "../service.entity";
 
 import { LangEnum } from "@/enums/lang.enum";
 import { StatusEnum } from "@/enums/status.enum";
@@ -42,7 +42,7 @@ export class UpdateServiceDto {
   @IsString()
   @IsOptional()
   @Unique([
-    SerivceEntity,
+    ServiceEntity,
     {
       select: "entity.id",
       where: "entity.alias = :alias and id != :id",

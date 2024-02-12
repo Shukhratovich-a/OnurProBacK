@@ -5,11 +5,11 @@ import { AboutEntity } from "./about.entity";
 
 import { AboutController } from "./about.controller";
 
-import { AboutSerivce } from "./about.service";
+import { AboutService } from "./about.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([AboutEntity])],
   controllers: [AboutController],
-  providers: [AboutSerivce],
+  providers: [AboutService],
 })
 export class AboutModule {}

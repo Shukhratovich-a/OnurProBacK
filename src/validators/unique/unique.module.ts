@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 
 import { UniqueConstraint } from "./unique.constraint";
-import { UniqueSerivce } from "./unique.service";
+import { UniqueService } from "./unique.service";
 
 @Module({
-  providers: [UniqueSerivce, UniqueConstraint],
-  exports: [UniqueSerivce, UniqueConstraint],
+  providers: [UniqueService, UniqueConstraint],
+  exports: [UniqueService, UniqueConstraint],
 })
 export class UniqueModule {}

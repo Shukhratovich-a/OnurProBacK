@@ -6,7 +6,7 @@ import { Not, Repository } from "typeorm";
 import { LangEnum } from "@/enums/lang.enum";
 import { StatusEnum } from "@/enums/status.enum";
 
-import { SerivceEntity, SerivceBodyEntity } from "./service.entity";
+import { ServiceEntity, ServiceBodyEntity } from "./service.entity";
 
 import { CreateServiceDto, CreateServiceBodyDto } from "./dto/create-service.dto";
 import { UpdateServiceBodyDto, UpdateServiceDto } from "./dto/update-service.dto";
@@ -14,10 +14,10 @@ import { UpdateServiceBodyDto, UpdateServiceDto } from "./dto/update-service.dto
 @Injectable()
 export class ServiceService {
   constructor(
-    @InjectRepository(SerivceEntity)
-    private readonly serviceRepository: Repository<SerivceEntity>,
-    @InjectRepository(SerivceBodyEntity)
-    private readonly serviceBodyRepository: Repository<SerivceBodyEntity>,
+    @InjectRepository(ServiceEntity)
+    private readonly serviceRepository: Repository<ServiceEntity>,
+    @InjectRepository(ServiceBodyEntity)
+    private readonly serviceBodyRepository: Repository<ServiceBodyEntity>,
   ) {}
 
   async findAll(lang: LangEnum = LangEnum.EN) {

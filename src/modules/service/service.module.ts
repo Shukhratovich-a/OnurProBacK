@@ -3,14 +3,14 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { ValidatorsModule } from "@/validators/validators.module";
 
-import { SerivceEntity, SerivceBodyEntity } from "./service.entity";
+import { ServiceEntity, ServiceBodyEntity } from "./service.entity";
 
 import { ServiceController } from "./service.controller";
 
 import { ServiceService } from "./service.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SerivceEntity, SerivceBodyEntity]), ValidatorsModule],
+  imports: [TypeOrmModule.forFeature([ServiceEntity, ServiceBodyEntity]), ValidatorsModule],
   controllers: [ServiceController],
   providers: [ServiceService],
 })

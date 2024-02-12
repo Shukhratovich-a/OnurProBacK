@@ -32,7 +32,7 @@ import { JwtAuthGuard } from "@/guards/jwt.guard";
 
 import { LangEnum } from "@/enums/lang.enum";
 
-import { AboutSerivce } from "./about.service";
+import { AboutService } from "./about.service";
 
 import { CreateAboutDto } from "./dto/create-about.dto";
 import { UpdateAboutDto } from "./dto/update-about.dto";
@@ -51,7 +51,7 @@ import {
 @UseInterceptors(ResponseInterceptor)
 @ApiTags("About")
 export class AboutController {
-  constructor(private readonly aboutService: AboutSerivce) {}
+  constructor(private readonly aboutService: AboutService) {}
 
   @Get("/by-lang/:lang")
   @ResponseMessage(FETCHED_SUCCESSFULLY)

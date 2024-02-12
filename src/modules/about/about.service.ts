@@ -11,7 +11,7 @@ import { CreateAboutDto } from "./dto/create-about.dto";
 import { UpdateAboutDto } from "./dto/update-about.dto";
 
 @Injectable()
-export class AboutSerivce {
+export class AboutService {
   constructor(
     @InjectRepository(AboutEntity)
     private readonly aboutRepository: Repository<AboutEntity>,

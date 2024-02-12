@@ -4,7 +4,7 @@ import { IsEnum, IsNotEmpty, IsOptional, IsString, Length } from "class-validato
 
 import { Unique } from "@/validators/unique/unique.decorator";
 
-import { SerivceEntity } from "../service.entity";
+import { ServiceEntity } from "../service.entity";
 
 import { LangEnum } from "@/enums/lang.enum";
 import { StatusEnum } from "@/enums/status.enum";
@@ -42,7 +42,7 @@ export class CreateServiceDto {
   @IsString()
   @IsNotEmpty()
   @Unique([
-    SerivceEntity,
+    ServiceEntity,
     {
       select: "entity.id",
       where: "entity.alias = :alias",

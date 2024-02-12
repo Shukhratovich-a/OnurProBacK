@@ -31,7 +31,7 @@ import { JwtAuthGuard } from "@/guards/jwt.guard";
 
 import { ServiceService } from "../service/service.service";
 
-import { PartnerSerivce } from "./partner.service";
+import { PartnerService } from "./partner.service";
 
 import { CreatePartnerDto } from "./dto/create-partner.dto";
 import { UpdatePartnerDto } from "./dto/update-partner.dto";
@@ -51,7 +51,7 @@ import {
 @UseInterceptors(ResponseInterceptor)
 @ApiTags("Partner")
 export class PartnerController {
-  constructor(private readonly partnerService: PartnerSerivce, private readonly serviceService: ServiceService) {}
+  constructor(private readonly partnerService: PartnerService, private readonly serviceService: ServiceService) {}
 
   @Get()
   @ResponseMessage(GET_MANY_SUCCESS)

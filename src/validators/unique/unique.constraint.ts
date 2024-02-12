@@ -5,7 +5,7 @@ import { EntityManager } from "typeorm";
 import { each, at } from "lodash";
 import { ValidationArguments, ValidatorConstraintInterface, ValidatorConstraint } from "class-validator";
 
-import { UniqueSerivce } from "./unique.service";
+import { UniqueService } from "./unique.service";
 
 interface Arguments extends ValidationArguments {
   object: {
@@ -19,8 +19,8 @@ export class UniqueConstraint implements ValidatorConstraintInterface {
   constructor(
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
-    @Inject(UniqueSerivce)
-    private uniqueService: UniqueSerivce,
+    @Inject(UniqueService)
+    private uniqueService: UniqueService,
   ) {}
 
   async validate(value: string, validationArguments?: Arguments): Promise<boolean> {

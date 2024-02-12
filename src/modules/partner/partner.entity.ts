@@ -11,7 +11,7 @@ import {
 
 import { StatusEnum } from "@/enums/status.enum";
 
-import { SerivceEntity } from "../service/service.entity";
+import { ServiceEntity } from "../service/service.entity";
 
 @Entity("partners", { name: "partner" })
 export class PartnerEntity extends BaseEntity {
@@ -30,12 +30,12 @@ export class PartnerEntity extends BaseEntity {
   @Column({ name: "image", type: "varchar", length: 256 })
   image: string;
 
-  @ManyToOne(() => SerivceEntity, (service) => service.partners, {
+  @ManyToOne(() => ServiceEntity, (service) => service.partners, {
     onDelete: "CASCADE",
     nullable: false,
   })
   @JoinColumn({ name: "service_id" })
-  service: SerivceEntity;
+  service: ServiceEntity;
 
   @Column({ name: "status", type: "enum", enum: StatusEnum, default: StatusEnum.ACTIVE })
   status: StatusEnum;

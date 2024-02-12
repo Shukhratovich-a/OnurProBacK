@@ -6,7 +6,7 @@ import { JwtAuthGuard } from "@/guards/jwt.guard";
 
 import { FilesService } from "./files.service";
 
-import { FileElementResponese } from "./dto/file-element.dto";
+import { FileElementResponse } from "./dto/file-element.dto";
 
 import { MFile } from "./mfile.class";
 
@@ -19,7 +19,7 @@ export class FilesController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor("file"))
   @ApiBearerAuth()
-  async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<FileElementResponese[]> {
+  async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<FileElementResponse[]> {
     const saveArray: MFile[] = [new MFile(file)];
 
     if (file.mimetype.includes("image")) {

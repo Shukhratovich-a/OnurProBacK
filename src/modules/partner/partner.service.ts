@@ -11,7 +11,7 @@ import { CreatePartnerDto } from "./dto/create-partner.dto";
 import { UpdatePartnerDto } from "./dto/update-partner.dto";
 
 @Injectable()
-export class PartnerSerivce {
+export class PartnerService {
   constructor(
     @InjectRepository(PartnerEntity)
     private readonly partnerRepository: Repository<PartnerEntity>,
